@@ -111,7 +111,7 @@ async function loadProductsCart() {
               <p>${product.name}</p>
               <p>$${totalPrice.toFixed(2)}</p>
               <p class="change-quantity">
-                <button>-</button>
+                <button onclick=(decreaseQuantity(${product.id}))>-</button>
                 <button onclick=(increaseQuantity(${product.id}))>+</button> 
               </p>
               <p class="class-product-delete">
