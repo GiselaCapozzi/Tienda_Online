@@ -2,6 +2,7 @@ const CART_PRODUCTOS = 'cartProductosId';
 
 document.addEventListener('DOMContentLoaded', () => {
   loadProducts();
+  loadProductsCart();
 })
 
 function getProductsDb() {
@@ -83,20 +84,26 @@ async function loadProductsCart() {
   // Convertimos el resultado del localStorage en un array
   const localStorageItems = localStorage.getItem(CART_PRODUCTOS);
 
-  const idProductsSplit = localStorageItems.split(',');
-
-  // Eliminamos los iDs duplicados
-  const idProductsCart = Array.from(new Set(idProductsSplit));
-
   let html = '';
+  if (!localStorageItems) {
+    html = `
+      <div class="cart-product empty">
+        <p>Carrito vacio</p>
+      </div>
+    `
+  } else {
+    const idProductsSplit = localStorageItems.split(',');
 
-  idProductsCart.forEach(id => {
-    products.forEach(product => {
-      if (id == product.id) {
-        const quantity = countDuplicatesId(id, idProductsSplit);
-        const totalPrice = product.precio * quantity;
+    // Eliminamos los iDs duplicados
+    const idProductsCart = Array.from(new Set(idProductsSplit));
 
-        html += `
+    idProductsCart.forEach(id => {
+      products.forEach(product => {
+        if (id == product.id) {
+          const quantity = countDuplicatesId(id, idProductsSplit);
+          const totalPrice = product.precio * quantity;
+
+          html += `
           <div class="cart-product">
             <img src="${product.image}" alt=${product.name}/>
             <div class="cart-product-info">
@@ -113,9 +120,11 @@ async function loadProductsCart() {
             </div> 
           </div>
         `
-      }
+        }
+      })
     })
-  })
+  }
+
 
   document.getElementsByClassName('cart-products')[0].innerHTML = html;
 }
