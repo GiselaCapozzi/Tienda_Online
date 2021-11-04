@@ -111,11 +111,11 @@ async function loadProductsCart() {
               <p>${product.name}</p>
               <p>$${totalPrice.toFixed(2)}</p>
               <p class="change-quantity">
-                <button>-</button>
-                <button>+</button> 
+                <button onclick=(decreaseQuantity(${product.id}))>-</button>
+                <button onclick=(increaseQuantity(${product.id}))>+</button> 
               </p>
               <p class="class-product-delete">
-                <button>Eliminar</button>
+                <button onclick=(deleteProductCart(${product.id}))>Eliminar</button>
               </p>
             </div> 
           </div>
@@ -129,6 +129,78 @@ async function loadProductsCart() {
   document.getElementsByClassName('cart-products')[0].innerHTML = html;
 }
 
+function deleteProductCart(idProduct) {
+  const idProductsCart = localStorage.getItem(CART_PRODUCTOS);
+  const arrayIdProductsCart = idProductsCart.split(',');
+  const resultIdDelete = deleteAllIds(idProduct, arrayIdProductsCart);
+
+  if(resultIdDelete) {
+    let count = 0;
+    let idsString = '';
+
+    resultIdDelete.forEach(id => {
+      count++;
+      if (count < resultIdDelete.length) {
+        idsString += id + ','
+      } else {
+        idsString += id;
+      }
+    });
+    localStorage.setItem(CART_PRODUCTOS, idsString);
+  }
+
+  const idsLocalStorage = localStorage.getItem(CART_PRODUCTOS);
+  if (!idsLocalStorage) {
+    localStorage.removeItem(CART_PRODUCTOS);
+  }
+
+  loadProductsCart();
+}
+
+function increaseQuantity(idProduct) {
+  const idProductsCart = localStorage.getItem(CART_PRODUCTOS);
+  const arrayIdProductsCart = idProductsCart.split(',');
+  arrayIdProductsCart.push(idProduct);
+
+  let count = 0;
+  let idsString = '';
+  arrayIdProductsCart.forEach(id => {
+    count++;
+    if (count < arrayIdProductsCart.length) {
+      idsString += id + ','
+    } else {
+      idsString += id;
+    }
+  });
+  localStorage.setItem(CART_PRODUCTOS, idsString);
+  loadProductsCart();
+}
+
+function decreaseQuantity(idProduct) {
+  const idProductsCart = localStorage.getItem(CART_PRODUCTOS);
+  const arrayIdProductsCart = idProductsCart.split(',');
+
+  const deleteItem = idProduct.toString();
+  let index = arrayIdProductsCart.indexOf(deleteItem);
+
+  if (index > -1) {
+    arrayIdProductsCart.splice(index, 1);
+  }
+
+  let count = 0;
+  let idsString = '';
+  arrayIdProductsCart.forEach(id => {
+    count++;
+    if(count < arrayIdProductsCart.length) {
+      idsString += id + ',';
+    } else {
+      idsString += id;
+    }
+  });
+  localStorage.setItem(CART_PRODUCTOS, idsString);
+  loadProductsCart();
+}
+
 function countDuplicatesId(value, arrayIds) {
   let count = 0;
 
@@ -138,4 +210,10 @@ function countDuplicatesId(value, arrayIds) {
     }
   })
   return count;
+}
+
+function deleteAllIds(id, arrayIds) {
+  return arrayIds.filter(itemId => {
+    return itemId != id
+  })
 }
