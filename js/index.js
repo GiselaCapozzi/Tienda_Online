@@ -56,3 +56,23 @@ function openCloseCart() {
     }
   })
 }
+
+function addProductCart(idProduct) {
+  let arrayProductsId = [];
+
+  let localStorageItems = localStorage.getItem(CART_PRODUCTOS);
+
+  if (localStorageItems === null) {
+    arrayProductsId.push(idProduct);
+    localStorage.setItem(CART_PRODUCTOS, arrayProductsId);
+  } else {
+    let productsId = localStorage.getItem(CART_PRODUCTOS);
+    if(productsId.length > 0) {
+      productsId += ',' + idProduct;
+    } else {
+      productsId = productsId;
+    }
+    localStorage.setItem(CART_PRODUCTOS, productsId);
+  }
+
+}
