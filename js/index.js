@@ -112,7 +112,7 @@ async function loadProductsCart() {
               <p>$${totalPrice.toFixed(2)}</p>
               <p class="change-quantity">
                 <button>-</button>
-                <button>+</button> 
+                <button onclick=(increaseQuantity(${product.id}))>+</button> 
               </p>
               <p class="class-product-delete">
                 <button onclick=(deleteProductCart(${product.id}))>Eliminar</button>
@@ -154,6 +154,25 @@ function deleteProductCart(idProduct) {
     localStorage.removeItem(CART_PRODUCTOS);
   }
 
+  loadProductsCart();
+}
+
+function increaseQuantity(idProduct) {
+  const idProductsCart = localStorage.getItem(CART_PRODUCTOS);
+  const arrayIdProductsCart = idProductsCart.split(',');
+  arrayIdProductsCart.push(idProduct);
+
+  let count = 0;
+  let idsString = '';
+  arrayIdProductsCart.forEach(id => {
+    count++;
+    if (count < arrayIdProductsCart.length) {
+      idsString += id + ','
+    } else {
+      idsString += id;
+    }
+  });
+  localStorage.setItem(CART_PRODUCTOS, idsString);
   loadProductsCart();
 }
 
