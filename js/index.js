@@ -45,10 +45,10 @@ async function loadProducts() {
 function openCloseCart() {
   const containerCart = document.getElementsByClassName('cart-products')[0];
   containerCart.classList.forEach(item => {
-    if(item === 'hidden') {
+    if (item === 'hidden') {
       containerCart.classList.remove('hidden');
       containerCart.classList.add('active');
-    } 
+    }
 
     if (item === 'active') {
       containerCart.classList.remove('active');
@@ -67,12 +67,66 @@ function addProductCart(idProduct) {
     localStorage.setItem(CART_PRODUCTOS, arrayProductsId);
   } else {
     let productsId = localStorage.getItem(CART_PRODUCTOS);
-    if(productsId.length > 0) {
+    if (productsId.length > 0) {
       productsId += ',' + idProduct;
     } else {
       productsId = productsId;
     }
     localStorage.setItem(CART_PRODUCTOS, productsId);
   }
+  loadProductsCart()
+}
 
+async function loadProductsCart() {
+  const products = await getProductsDb();
+
+  // Convertimos el resultado del localStorage en un array
+  const localStorageItems = localStorage.getItem(CART_PRODUCTOS);
+
+  const idProductsSplit = localStorageItems.split(',');
+
+  // Eliminamos los iDs duplicados
+  const idProductsCart = Array.from(new Set(idProductsSplit));
+
+  let html = '';
+
+  idProductsCart.forEach(id => {
+    products.forEach(product => {
+      if (id == product.id) {
+        const quantity = countDuplicatesId(id, idProductsSplit);
+        const totalPrice = product.precio * quantity;
+
+        html += `
+          <div class="cart-product">
+            <img src="${product.image}" alt=${product.name}/>
+            <div class="cart-product-info">
+              <span class="quantity">${quantity}</span>
+              <p>${product.name}</p>
+              <p>$${totalPrice.toFixed(2)}</p>
+              <p class="change-quantity">
+                <button>-</button>
+                <button>+</button> 
+              </p>
+              <p class="class-product-delete">
+                <button>Eliminar</button>
+              </p>
+            </div> 
+          </div>
+        `
+      }
+    })
+  })
+
+  document.getElementsByClassName('cart-products')[0].innerHTML = html;
+}
+
+function countDuplicatesId(value, arrayIds) {
+  let count = 0;
+
+  arrayIds.forEach(id => {
+    if (value == id) {
+      count++;
+    }
+  })
+  return count;
 }
