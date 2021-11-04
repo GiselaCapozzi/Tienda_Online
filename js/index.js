@@ -41,3 +41,18 @@ async function loadProducts() {
   });
   document.getElementsByClassName('products')[0].innerHTML = html;
 }
+
+function openCloseCart() {
+  const containerCart = document.getElementsByClassName('cart-products')[0];
+  containerCart.classList.forEach(item => {
+    if(item === 'hidden') {
+      containerCart.classList.remove('hidden');
+      containerCart.classList.add('active');
+    } 
+
+    if (item === 'active') {
+      containerCart.classList.remove('active');
+      containerCart.classList.add('hidden');
+    }
+  })
+}
