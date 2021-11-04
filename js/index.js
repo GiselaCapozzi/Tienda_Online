@@ -115,7 +115,7 @@ async function loadProductsCart() {
                 <button>+</button> 
               </p>
               <p class="class-product-delete">
-                <button>Eliminar</button>
+                <button onclick=(deleteProductCart(${product.id}))>Eliminar</button>
               </p>
             </div> 
           </div>
@@ -129,6 +129,34 @@ async function loadProductsCart() {
   document.getElementsByClassName('cart-products')[0].innerHTML = html;
 }
 
+function deleteProductCart(idProduct) {
+  const idProductsCart = localStorage.getItem(CART_PRODUCTOS);
+  const arrayIdProductsCart = idProductsCart.split(',');
+  const resultIdDelete = deleteAllIds(idProduct, arrayIdProductsCart);
+
+  if(resultIdDelete) {
+    let count = 0;
+    let idsString = '';
+
+    resultIdDelete.forEach(id => {
+      count++;
+      if (count < resultIdDelete.length) {
+        idsString += id + ','
+      } else {
+        idsString += id;
+      }
+    });
+    localStorage.setItem(CART_PRODUCTOS, idsString);
+  }
+
+  const idsLocalStorage = localStorage.getItem(CART_PRODUCTOS);
+  if (!idsLocalStorage) {
+    localStorage.removeItem(CART_PRODUCTOS);
+  }
+
+  loadProductsCart();
+}
+
 function countDuplicatesId(value, arrayIds) {
   let count = 0;
 
@@ -138,4 +166,10 @@ function countDuplicatesId(value, arrayIds) {
     }
   })
   return count;
+}
+
+function deleteAllIds(id, arrayIds) {
+  return arrayIds.filter(itemId => {
+    return itemId != id
+  })
 }
