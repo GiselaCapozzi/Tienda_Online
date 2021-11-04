@@ -176,6 +176,31 @@ function increaseQuantity(idProduct) {
   loadProductsCart();
 }
 
+function decreaseQuantity(idProduct) {
+  const idProductsCart = localStorage.getItem(CART_PRODUCTOS);
+  const arrayIdProductsCart = idProductsCart.split(',');
+
+  const deleteItem = idProduct.toString();
+  let index = arrayIdProductsCart.indexOf(deleteItem);
+
+  if (index > -1) {
+    arrayIdProductsCart.splice(index, 1);
+  }
+
+  let count = 0;
+  let idsString = '';
+  arrayIdProductsCart.forEach(id => {
+    count++;
+    if(count < arrayIdProductsCart.length) {
+      idsString += id + ',';
+    } else {
+      idsString += id;
+    }
+  });
+  localStorage.setItem(CART_PRODUCTOS, idsString);
+  loadProductsCart();
+}
+
 function countDuplicatesId(value, arrayIds) {
   let count = 0;
 
